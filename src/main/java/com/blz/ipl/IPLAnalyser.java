@@ -40,6 +40,21 @@ public class IPLAnalyser {
 			throw new IPLAnalyserException("Incorrect CSV File", IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
 		}
 	}
+	
+	public String getSortedBatsmenListOnBattingStrikeRate(String csvFilePath) throws IPLAnalyserException {
+		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
+			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
+			List<IPLBattingAnalysis> batsmenList = csvBuilder.getListFromCsv(reader, IPLBattingAnalysis.class);
+			Function<IPLBattingAnalysis, Double> batsmanEntity = record -> record.strikeRate;
+			Comparator<IPLBattingAnalysis> censusComparator = Comparator.comparing(batsmanEntity);
+			this.sortBatsmenList(batsmenList, censusComparator);
+			String sortedStateCensusToJson = new Gson().toJson(batsmenList);
+			return sortedStateCensusToJson;
+		} catch (IOException e) {
+			throw new IPLAnalyserException("Incorrect CSV File", IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+		}
+	}
+
 
 	private void sortBatsmenList(List<IPLBattingAnalysis> batsmenList,
 			Comparator<IPLBattingAnalysis> censusComparator) {
