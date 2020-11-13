@@ -32,7 +32,7 @@ public class IPLBattingAnalysis {
 	public int ballsFaced;
 
 	@CsvBindByName(column = "SR", required = true)
-	public int strikeRate;
+	public double strikeRate;
 
 	@CsvBindByName(column = "100", required = true)
 	public int centuries;
