@@ -119,4 +119,11 @@ public class IPLAnalyserTest {
 				new IPLAnalyser().getBowlersHadBestEconomy(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
 	}
 
+	@Test
+	public void givenMostWktsCSV_ShouldReturnBestBowling_StrikingRatesWith5WAnd4W()
+			throws IOException, IPLAnalyserException {
+		Assert.assertEquals("Lasith Malinga",
+				new IPLAnalyser().getBestStrikingRatesWith5WAnd4W(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
+	}
+
 }
