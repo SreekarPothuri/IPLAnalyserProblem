@@ -71,6 +71,20 @@ public class IPLAnalyser {
 		return playerWithMax6s;
 	}
 
+	public List<IPLBattingAnalysis> getBestStrikingRatesWithBoundaries(String csvFilePath)
+			throws IOException, IPLAnalyserException {
+		loadCSVData(csvFilePath);
+		Integer playerWithMax6s4s = iplRunsCSVList.stream().map(player -> (player.getFours() + player.getSixes()))
+				.max(Double::compare).get();
+		List<IPLBattingAnalysis> playerWithBest6s4s = iplRunsCSVList.stream()
+				.filter(player -> player.getFours() + player.getSixes() == playerWithMax6s4s)
+				.collect(Collectors.toList());
+		double playerWithBestStrikerate = playerWithBest6s4s.stream().map(IPLBattingAnalysis::getStrikeRate)
+				.max(Double::compare).get();
+		return playerWithBest6s4s.stream().filter(player -> player.getStrikeRate() == playerWithBestStrikerate)
+				.collect(Collectors.toList());
+	}
+
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
 		for (int i = 0; i < iplRunsCSVList.size(); i++) {
 			for (int j = 0; j < iplRunsCSVList.size() - i - 1; j++) {
