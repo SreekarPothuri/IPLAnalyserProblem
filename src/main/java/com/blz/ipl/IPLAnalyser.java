@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -192,6 +193,23 @@ public class IPLAnalyser {
 				.max(Double::compare).get();
 		return playerWithMaxWkts.stream().filter(player -> player.getAvg() == playerWithBestBowlingAvgs)
 				.collect(Collectors.toList());
+	}
+
+	public List<String> BestBattingAverageWithBestBowlingAverage() throws IOException, IPLAnalyserException {
+		List<String> list = new ArrayList<>();
+		List<IPLBattingAnalysis> playerWithBestBattingAvg = iplRunsCSVList.stream()
+				.sorted(Comparator.comparingDouble(player -> player.avg)).collect(Collectors.toList());
+		Collections.reverse(playerWithBestBattingAvg);
+		List<IPLBowlingAnalysis> playerWithBestBowlingAvg = iplWktsCSVList.stream()
+				.sorted(Comparator.comparingDouble(player -> player.avg)).collect(Collectors.toList());
+		for (IPLBattingAnalysis mostRunsCSV : playerWithBestBattingAvg) {
+			for (IPLBowlingAnalysis mostWktsCSV : playerWithBestBowlingAvg) {
+				if (mostRunsCSV.playerName.equals(mostWktsCSV.playerName)) {
+					list.add(mostRunsCSV.playerName);
+				}
+			}
+		}
+		return list;
 	}
 
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
