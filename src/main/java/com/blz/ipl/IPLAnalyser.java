@@ -138,12 +138,22 @@ public class IPLAnalyser {
 	public String getTopStrikingRatesOfBowler(String csvFilePath) throws IPLAnalyserException {
 		loadWktsCSVData(csvFilePath);
 		if (iplWktsCSVList == null || iplWktsCSVList.size() == 0) {
-			throw new IPLAnalyserException("NO_CENSUS_DATA", IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+			throw new IPLAnalyserException("NO_CENSUS_DATA",
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
 		}
 		Comparator<IPLBowlingAnalysis> wktsComparator = Comparator.comparing(census -> census.strikeRate);
 		this.sort2(wktsComparator);
 		String sortedWktsJson = new Gson().toJson(this.iplWktsCSVList);
 		return sortedWktsJson;
+	}
+
+	public List<IPLBowlingAnalysis> getBowlersHadBestEconomy(String csvFilePath)
+			throws IOException, IPLAnalyserException {
+		loadWktsCSVData(csvFilePath);
+		List<IPLBowlingAnalysis> playerWithBestEconomy = iplWktsCSVList.stream()
+				.sorted(Comparator.comparingDouble(IPLBowlingAnalysis::getEconomy)).collect(Collectors.toList());
+		Collections.reverse(playerWithBestEconomy);
+		return playerWithBestEconomy;
 	}
 
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
