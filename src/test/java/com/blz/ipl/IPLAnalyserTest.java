@@ -70,4 +70,10 @@ public class IPLAnalyserTest {
 				new IPLAnalyser().getBestStrikingRatesWithBoundaries(RIGHT_MOST_RUNS_CSV).get(0).playerName);
 	}
 
+	@Test
+	public void givenMostRunsCSV_ShouldReturnbestStrikingRatesWithBestAverages()
+			throws IOException, IPLAnalyserException {
+		Assert.assertEquals("MS Dhoni",
+				new IPLAnalyser().getGreatAveragesWithBestStrikingRates(RIGHT_MOST_RUNS_CSV).get(0).playerName);
+	}
 }
