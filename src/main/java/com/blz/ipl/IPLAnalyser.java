@@ -14,12 +14,27 @@ import com.google.gson.Gson;
 public class IPLAnalyser {
 
 	public static List<IPLBattingAnalysis> iplRunsCSVList;
+	public static List<IPLBowlingAnalysis> iplWktsCSVList;
 
 	public int loadCSVData(String csvFilePath) throws IPLAnalyserException {
 		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
 			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
 			iplRunsCSVList = csvBuilder.getCSVFileList(reader, IPLBattingAnalysis.class);
 			return iplRunsCSVList.size();
+		} catch (IOException e) {
+			throw new IPLAnalyserException(e.getMessage(),
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+		} catch (RuntimeException e) {
+			throw new IPLAnalyserException(e.getMessage(),
+					IPLAnalyserException.IPLAnalyserExceptionType.SOME_OTHER_ERRORS);
+		}
+	}
+
+	public int loadWktsCSVData(String CSVFilePath) throws IPLAnalyserException {
+		try (Reader reader = Files.newBufferedReader(Paths.get(CSVFilePath))) {
+			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
+			iplWktsCSVList = csvBuilder.getCSVFileList(reader, IPLBowlingAnalysis.class);
+			return iplWktsCSVList.size();
 		} catch (IOException e) {
 			throw new IPLAnalyserException(e.getMessage(),
 					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
@@ -108,6 +123,18 @@ public class IPLAnalyser {
 				.collect(Collectors.toList());
 	}
 
+	public String getTopBowlingAverages(String csvFilePath) throws IPLAnalyserException {
+		loadWktsCSVData(csvFilePath);
+		if (iplWktsCSVList == null || iplWktsCSVList.size() == 0) {
+			throw new IPLAnalyserException("NO_CENSUS_DATA",
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+		}
+		Comparator<IPLBowlingAnalysis> wktsComparator = Comparator.comparing(census -> census.avg);
+		this.sort2(wktsComparator);
+		String sortedWktsJson = new Gson().toJson(this.iplWktsCSVList);
+		return sortedWktsJson;
+	}
+
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
 		for (int i = 0; i < iplRunsCSVList.size(); i++) {
 			for (int j = 0; j < iplRunsCSVList.size() - i - 1; j++) {
@@ -120,4 +147,18 @@ public class IPLAnalyser {
 			}
 		}
 	}
+
+	public void sort2(Comparator<IPLBowlingAnalysis> wktsComparator) {
+		for (int i = 0; i < iplWktsCSVList.size(); i++) {
+			for (int j = 0; j < iplWktsCSVList.size() - i - 1; j++) {
+				IPLBowlingAnalysis wkt1 = iplWktsCSVList.get(j);
+				IPLBowlingAnalysis wkt2 = iplWktsCSVList.get(j + 1);
+				if (wktsComparator.compare(wkt1, wkt2) > 0) {
+					iplWktsCSVList.set(j, wkt2);
+					iplWktsCSVList.set(j + 1, wkt1);
+				}
+			}
+		}
+	}
+
 }
