@@ -140,4 +140,9 @@ public class IPLAnalyserTest {
 				iplanalyser.getBowlersMaximumWicketsWithBestBowlingAvgs(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
 	}
 
+	@Test
+	public void givenMostWktsCSV_ShouldReturnBestBatting_AndBowlingAverages() throws IOException, IPLAnalyserException {
+		Assert.assertEquals("Andre Russell", iplanalyser.BestBattingAverageWithBestBowlingAverage().get(0));
+	}
+
 }
