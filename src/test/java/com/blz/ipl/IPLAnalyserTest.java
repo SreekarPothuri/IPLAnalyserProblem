@@ -145,4 +145,8 @@ public class IPLAnalyserTest {
 		Assert.assertEquals("Andre Russell", iplanalyser.BestBattingAverageWithBestBowlingAverage().get(0));
 	}
 
+	@Test
+	public void givenMostWktsCSV_ShouldReturnBestallRounder() throws IOException, IPLAnalyserException {
+		Assert.assertEquals("Andre Russell", iplanalyser.getBestAllRounders().get(0));
+	}
 }
