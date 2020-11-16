@@ -100,7 +100,7 @@ public class IPLAnalyserTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void givenMostWktsCSV_ShouldReturnTopStrikeRatesOfBowlers() throws IPLAnalyserException {
 		String sortedData = null;
@@ -112,4 +112,11 @@ public class IPLAnalyserTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void givenMostWktsCSV_ShouldReturnBestBowlingEconomy() throws IOException, IPLAnalyserException {
+		Assert.assertEquals("Ben Cutting",
+				new IPLAnalyser().getBowlersHadBestEconomy(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
+	}
+
 }
