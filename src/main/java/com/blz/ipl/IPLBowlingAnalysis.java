@@ -47,6 +47,18 @@ public class IPLBowlingAnalysis {
 		return economy;
 	}
 
+	public double getStrikeRate() {
+		return strikeRate;
+	}
+
+	public int getFourWkHaul() {
+		return fourWkHaul;
+	}
+
+	public int getFiveWkHaul() {
+		return fiveWkHaul;
+	}
+
 	@Override
 	public String toString() {
 		return "IPLBatting [position=" + position + ", player=" + playerName + ", match=" + matches + ", innings="
