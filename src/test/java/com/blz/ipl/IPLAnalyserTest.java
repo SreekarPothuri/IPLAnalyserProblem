@@ -76,4 +76,10 @@ public class IPLAnalyserTest {
 		Assert.assertEquals("MS Dhoni",
 				new IPLAnalyser().getGreatAveragesWithBestStrikingRates(RIGHT_MOST_RUNS_CSV).get(0).playerName);
 	}
+
+	@Test
+	public void givenMostRunsCSV_ShouldReturnWhoHitMaxRuns_WithBestAvgs() throws IOException, IPLAnalyserException {
+		Assert.assertEquals("David Warner ",
+				new IPLAnalyser().getMaxRunsWithBestAvg(RIGHT_MOST_RUNS_CSV).get(0).playerName);
+	}
 }
