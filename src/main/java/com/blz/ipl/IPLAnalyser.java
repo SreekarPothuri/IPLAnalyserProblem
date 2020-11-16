@@ -97,6 +97,17 @@ public class IPLAnalyser {
 				.collect(Collectors.toList());
 	}
 
+	public List<IPLBattingAnalysis> getMaxRunsWithBestAvg(String csvFilePath) throws IOException, IPLAnalyserException {
+		loadCSVData(csvFilePath);
+		int maxRuns = iplRunsCSVList.stream().map(IPLBattingAnalysis::getRuns).max(Integer::compare).get();
+		List<IPLBattingAnalysis> playerWithMaxRuns = iplRunsCSVList.stream()
+				.filter(player -> player.getRuns() == maxRuns).collect(Collectors.toList());
+		double playerWithBestAvgs = playerWithMaxRuns.stream().map(IPLBattingAnalysis::getAvg).max(Double::compare)
+				.get();
+		return playerWithMaxRuns.stream().filter(player -> player.getAvg() == playerWithBestAvgs)
+				.collect(Collectors.toList());
+	}
+
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
 		for (int i = 0; i < iplRunsCSVList.size(); i++) {
 			for (int j = 0; j < iplRunsCSVList.size() - i - 1; j++) {
