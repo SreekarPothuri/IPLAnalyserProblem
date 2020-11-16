@@ -43,6 +43,10 @@ public class IPLBowlingAnalysis {
 	@CsvBindByName(column = "5w", required = true)
 	public int fiveWkHaul;
 
+	public double getEconomy() {
+		return economy;
+	}
+
 	@Override
 	public String toString() {
 		return "IPLBatting [position=" + position + ", player=" + playerName + ", match=" + matches + ", innings="
