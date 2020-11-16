@@ -133,4 +133,11 @@ public class IPLAnalyserTest {
 				iplanalyser.getWhoHadBowlingAvgsWithBestStrikingRates(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
 	}
 
+	@Test
+	public void givenMostWktsCSV_ShouldReturnMaximumWickets_WithBestBowlingAvgs()
+			throws IOException, IPLAnalyserException {
+		Assert.assertEquals("Imran Tahir",
+				iplanalyser.getBowlersMaximumWicketsWithBestBowlingAvgs(RIGHT_MOST_WICKETS_CSV).get(0).playerName);
+	}
+
 }
