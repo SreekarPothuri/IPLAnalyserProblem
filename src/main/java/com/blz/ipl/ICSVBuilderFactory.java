@@ -3,7 +3,7 @@ package com.blz.ipl;
 import java.io.Reader;
 import java.util.List;
 
-public interface ICSVBuilderFactory {
+public interface ICSVBuilderFactory<E> {
 
-	public <E> List<E> getListFromCsv(Reader reader, Class<E> csvclass) throws IPLAnalyserException;
+	List<E> getCSVFileList(Reader reader, Class<E> csvClass) throws IPLAnalyserException;
 }

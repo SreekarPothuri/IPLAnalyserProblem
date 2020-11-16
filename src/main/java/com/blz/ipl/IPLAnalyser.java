@@ -6,65 +6,57 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
-import com.blz.ipl.IPLAnalyserException.IPLAnalyserExceptionType;
 import com.google.gson.Gson;
 
 public class IPLAnalyser {
 
-	public int loadBatsmenData(String csvFilePath) throws IPLAnalyserException {
-		if (!(csvFilePath.matches(".*\\.csv$")))
-			throw new IPLAnalyserException("Incorrect Type", IPLAnalyserExceptionType.INCORRECT_TYPE);
-		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
+	public static List<IPLBattingAnalysis> iplRunsCSVList;
+
+	public int loadCSVData(String csvFilePath) throws IPLAnalyserException {
+		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
 			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
-			List<IPLBattingAnalysis> batsmenList = csvBuilder.getListFromCsv(reader, IPLBattingAnalysis.class);
-			return batsmenList.size();
+			iplRunsCSVList = csvBuilder.getCSVFileList(reader, IPLBattingAnalysis.class);
+			return iplRunsCSVList.size();
 		} catch (IOException e) {
-			throw new IPLAnalyserException("Incorrect CSV File", IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+			throw new IPLAnalyserException(e.getMessage(),
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
 		} catch (RuntimeException e) {
-			throw new IPLAnalyserException("Wrong Delimiter or Header", IPLAnalyserExceptionType.SOME_OTHER_ERRORS);
+			throw new IPLAnalyserException(e.getMessage(),
+					IPLAnalyserException.IPLAnalyserExceptionType.SOME_OTHER_ERRORS);
 		}
 	}
 
-	public String getSortedBatsmenListOnBattingAverage(String csvFilePath) throws IPLAnalyserException {
-		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
-			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
-			List<IPLBattingAnalysis> batsmenList = csvBuilder.getListFromCsv(reader, IPLBattingAnalysis.class);
-			Function<IPLBattingAnalysis, Double> batsmanEntity = record -> record.avg;
-			Comparator<IPLBattingAnalysis> censusComparator = Comparator.comparing(batsmanEntity);
-			this.sortBatsmenList(batsmenList, censusComparator);
-			String sortedStateCensusToJson = new Gson().toJson(batsmenList);
-			return sortedStateCensusToJson;
-		} catch (IOException e) {
-			throw new IPLAnalyserException("Incorrect CSV File", IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+	public String getTopBattingAverages() throws IPLAnalyserException {
+		if (iplRunsCSVList == null || iplRunsCSVList.size() == 0) {
+			throw new IPLAnalyserException("NO_CENSUS_DATA",
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
 		}
-	}
-	
-	public String getSortedBatsmenListOnBattingStrikeRate(String csvFilePath) throws IPLAnalyserException {
-		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
-			ICSVBuilderFactory csvBuilder = CSVBuilderFactory.createCsvBuilder();
-			List<IPLBattingAnalysis> batsmenList = csvBuilder.getListFromCsv(reader, IPLBattingAnalysis.class);
-			Function<IPLBattingAnalysis, Double> batsmanEntity = record -> record.strikeRate;
-			Comparator<IPLBattingAnalysis> censusComparator = Comparator.comparing(batsmanEntity);
-			this.sortBatsmenList(batsmenList, censusComparator);
-			String sortedStateCensusToJson = new Gson().toJson(batsmenList);
-			return sortedStateCensusToJson;
-		} catch (IOException e) {
-			throw new IPLAnalyserException("Incorrect CSV File", IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
-		}
+		Comparator<IPLBattingAnalysis> censusComparator = Comparator.comparing(census -> census.avg);
+		this.sort(censusComparator);
+		String sortedStateCensusJson = new Gson().toJson(this.iplRunsCSVList);
+		return sortedStateCensusJson;
 	}
 
+	public String getTopStrikingRates() throws IPLAnalyserException {
+		if (iplRunsCSVList == null || iplRunsCSVList.size() == 0) {
+			throw new IPLAnalyserException("NO_CENSUS_DATA",
+					IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+		}
+		Comparator<IPLBattingAnalysis> runsComparator = Comparator.comparing(census -> census.strikeRate);
+		this.sort(runsComparator);
+		String sortedMostRunsJson = new Gson().toJson(this.iplRunsCSVList);
+		return sortedMostRunsJson;
+	}
 
-	private void sortBatsmenList(List<IPLBattingAnalysis> batsmenList,
-			Comparator<IPLBattingAnalysis> censusComparator) {
-		for (int i = 0; i < batsmenList.size() - 1; i++) {
-			for (int j = 0; j < batsmenList.size() - i - 1; j++) {
-				IPLBattingAnalysis sortKey1 = batsmenList.get(j);
-				IPLBattingAnalysis sortKey2 = batsmenList.get(j + 1);
-				if (censusComparator.compare(sortKey1, sortKey2) < 0) {
-					batsmenList.set(j, sortKey2);
-					batsmenList.set(j + 1, sortKey1);
+	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
+		for (int i = 0; i < iplRunsCSVList.size(); i++) {
+			for (int j = 0; j < iplRunsCSVList.size() - i - 1; j++) {
+				IPLBattingAnalysis census1 = iplRunsCSVList.get(j);
+				IPLBattingAnalysis census2 = iplRunsCSVList.get(j + 1);
+				if (censusComparator.compare(census1, census2) > 0) {
+					iplRunsCSVList.set(j, census2);
+					iplRunsCSVList.set(j + 1, census1);
 				}
 			}
 		}

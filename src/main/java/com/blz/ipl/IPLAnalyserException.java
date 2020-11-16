@@ -12,4 +12,9 @@ public class IPLAnalyserException extends Exception {
 		super(message);
 		this.exceptionType = exceptionType;
 	}
+
+	public IPLAnalyserException(String message, IPLAnalyserExceptionType type, Throwable cause) {
+		super(message, cause);
+		this.exceptionType = type;
+	}
 }
