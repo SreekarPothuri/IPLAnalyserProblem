@@ -228,7 +228,7 @@ public class IPLAnalyser {
 		}
 		return allRounder;
 	}
-	
+
 	public List<IPLBattingAnalysis> maximum100sWithBestBattingAverage(String csvFilePath)
 			throws IOException, IPLAnalyserException {
 		loadCSVData(csvFilePath);
@@ -237,6 +237,17 @@ public class IPLAnalyser {
 				.collect(Collectors.toList());
 		double battingAvg = maxCentury.stream().map(IPLBattingAnalysis::getAvg).max(Double::compare).get();
 		return maxCentury.stream().filter(player -> player.getAvg() == battingAvg).collect(Collectors.toList());
+	}
+
+	public List<IPLBattingAnalysis> getWhoHitZero100sAnd50sButBestBattingAvgs(String csvFilePath)
+			throws IOException, IPLAnalyserException {
+		loadCSVData(csvFilePath);
+		List<IPLBattingAnalysis> playerWithout100sAnd50s = iplRunsCSVList.stream()
+				.filter(player -> (player.getCenturies() + player.getFifties()) == 0).collect(Collectors.toList());
+		double playerWithBestAvg = playerWithout100sAnd50s.stream().map(IPLBattingAnalysis::getAvg).max(Double::compare)
+				.get();
+		return playerWithout100sAnd50s.stream().filter(player -> player.getAvg() == playerWithBestAvg)
+				.collect(Collectors.toList());
 	}
 
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
