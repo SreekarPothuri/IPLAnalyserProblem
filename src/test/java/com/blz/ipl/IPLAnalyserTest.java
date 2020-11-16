@@ -89,12 +89,25 @@ public class IPLAnalyserTest {
 		Assert.assertEquals(101, iplanalyser.loadWktsCSVData(RIGHT_MOST_WICKETS_CSV));
 	}
 
-	public void givenMostWktsCSV_ShouldReturnTopBowlingAverages() {
+	@Test
+	public void givenMostWktsCSV_ShouldReturnTopBowlingAverages() throws IPLAnalyserException {
 		try {
 			iplanalyser.loadCSVData(RIGHT_MOST_WICKETS_CSV);
 			String sortedData = iplanalyser.getTopBattingAverages();
 			IPLBowlingAnalysis[] wktsCSV = new Gson().fromJson(sortedData, IPLBowlingAnalysis[].class);
 			Assert.assertEquals(166, wktsCSV[wktsCSV.length - 1].avg, DELTA);
+		} catch (IPLAnalyserException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void givenMostWktsCSV_ShouldReturnTopStrikeRatesOfBowlers() throws IPLAnalyserException {
+		String sortedData = null;
+		try {
+			sortedData = iplanalyser.getTopStrikingRatesOfBowler(RIGHT_MOST_WICKETS_CSV);
+			IPLBowlingAnalysis[] wktsCSV = new Gson().fromJson(sortedData, IPLBowlingAnalysis[].class);
+			Assert.assertEquals(120, wktsCSV[wktsCSV.length - 1].avg, DELTA);
 		} catch (IPLAnalyserException e) {
 			e.printStackTrace();
 		}
