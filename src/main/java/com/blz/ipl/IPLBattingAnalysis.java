@@ -46,6 +46,34 @@ public class IPLBattingAnalysis {
 	@CsvBindByName(column = "6s", required = true)
 	public int sixes;
 
+	public int getRuns() {
+		return runs;
+	}
+
+	public double getAvg() {
+		return avg;
+	}
+
+	public int getStrikeRate() {
+		return strikeRate;
+	}
+
+	public int getCenturies() {
+		return centuries;
+	}
+
+	public int getFifties() {
+		return fifties;
+	}
+
+	public int getFours() {
+		return fours;
+	}
+
+	public int getSixes() {
+		return sixes;
+	}
+
 	@Override
 	public String toString() {
 		return "IPLBatting [position=" + position + ", player=" + playerName + ", match=" + matches + ", innings="
