@@ -12,25 +12,26 @@ import com.google.gson.Gson;
 public class IPLAnalyserTest {
 
 	private static final String RIGHT_MOST_RUNS_CSV = "F:\\BridgeLabz Fellowship Program\\practice\\IPLAnalyserProblem\\src\\test\\resources\\MostRuns.csv";
+	private static final String RIGHT_MOST_WICKETS_CSV = "F:\\BridgeLabz Fellowship Program\\practice\\IPLAnalyserProblem\\src\\test\\resources\\MostWkts.csv";
 	private static final double DELTA = 1e-15;
 
-	static IPLAnalyser iplbatting;
+	static IPLAnalyser iplanalyser;
 
 	@BeforeClass
 	public static void obj() {
-		iplbatting = new IPLAnalyser();
+		iplanalyser = new IPLAnalyser();
 	}
 
 	@Test
 	public void givenMostRunsCSV_ShouldReturnNumberOfRecords() throws IPLAnalyserException {
-		Assert.assertEquals(101, iplbatting.loadCSVData(RIGHT_MOST_RUNS_CSV));
+		Assert.assertEquals(101, iplanalyser.loadCSVData(RIGHT_MOST_RUNS_CSV));
 	}
 
 	@Test
 	public void givenMostRunsCSV_ShouldReturnTopBattingAverages() {
 		try {
-			iplbatting.loadCSVData(RIGHT_MOST_RUNS_CSV);
-			String sortedData = iplbatting.getTopBattingAverages();
+			iplanalyser.loadCSVData(RIGHT_MOST_RUNS_CSV);
+			String sortedData = iplanalyser.getTopBattingAverages();
 			IPLBattingAnalysis[] censusCSV = new Gson().fromJson(sortedData, IPLBattingAnalysis[].class);
 			Assert.assertEquals(83.2, censusCSV[censusCSV.length - 1].avg, DELTA);
 		} catch (IPLAnalyserException e) {
@@ -41,8 +42,8 @@ public class IPLAnalyserTest {
 	@Test
 	public void givenMostRunsCSV_ShouldReturnTopStrikingRatesOfBatsman() {
 		try {
-			iplbatting.loadCSVData(RIGHT_MOST_RUNS_CSV);
-			String sortedData = iplbatting.getTopStrikingRates();
+			iplanalyser.loadCSVData(RIGHT_MOST_RUNS_CSV);
+			String sortedData = iplanalyser.getTopStrikingRates();
 			IPLBattingAnalysis[] mostRunsCSV = new Gson().fromJson(sortedData, IPLBattingAnalysis[].class);
 			Assert.assertEquals(333.33, mostRunsCSV[mostRunsCSV.length - 1].avg, DELTA);
 		} catch (IPLAnalyserException e) {
@@ -81,5 +82,21 @@ public class IPLAnalyserTest {
 	public void givenMostRunsCSV_ShouldReturnWhoHitMaxRuns_WithBestAvgs() throws IOException, IPLAnalyserException {
 		Assert.assertEquals("David Warner ",
 				new IPLAnalyser().getMaxRunsWithBestAvg(RIGHT_MOST_RUNS_CSV).get(0).playerName);
+	}
+
+	@Test
+	public void givenMostWktsCSV_ShouldReturnNumberOfWktsRecords() throws IPLAnalyserException {
+		Assert.assertEquals(101, iplanalyser.loadWktsCSVData(RIGHT_MOST_WICKETS_CSV));
+	}
+
+	public void givenMostWktsCSV_ShouldReturnTopBowlingAverages() {
+		try {
+			iplanalyser.loadCSVData(RIGHT_MOST_WICKETS_CSV);
+			String sortedData = iplanalyser.getTopBattingAverages();
+			IPLBowlingAnalysis[] wktsCSV = new Gson().fromJson(sortedData, IPLBowlingAnalysis[].class);
+			Assert.assertEquals(166, wktsCSV[wktsCSV.length - 1].avg, DELTA);
+		} catch (IPLAnalyserException e) {
+			e.printStackTrace();
+		}
 	}
 }
