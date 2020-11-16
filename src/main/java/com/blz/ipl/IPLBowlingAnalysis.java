@@ -59,6 +59,10 @@ public class IPLBowlingAnalysis {
 		return fiveWkHaul;
 	}
 
+	public double getAvg() {
+		return avg;
+	}
+
 	@Override
 	public String toString() {
 		return "IPLBatting [position=" + position + ", player=" + playerName + ", match=" + matches + ", innings="
