@@ -1,5 +1,8 @@
 package com.blz.ipl;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,5 +48,17 @@ public class IPLAnalyserTest {
 		} catch (IPLAnalyserException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void givenMostRunsCSV_ShouldReturnMax4sCricketer() throws IOException, IPLAnalyserException {
+		List<IPLBattingAnalysis> lst = new IPLAnalyser().getTopFoursHittingBatsman(RIGHT_MOST_RUNS_CSV);
+		Assert.assertEquals("Shikhar Dhawan", new IPLAnalyser().getTopFoursHittingBatsman(RIGHT_MOST_RUNS_CSV).get(0).playerName);
+	}
+
+	@Test
+	public void givenMostRunsCSV_ShouldReturnMax6sCricketer() throws IOException, IPLAnalyserException {
+		List<IPLBattingAnalysis> lst = new IPLAnalyser().getTopSixesHittingBatsman(RIGHT_MOST_RUNS_CSV);
+		Assert.assertEquals("Andre Russell", new IPLAnalyser().getTopSixesHittingBatsman(RIGHT_MOST_RUNS_CSV).get(0).playerName);
 	}
 }
