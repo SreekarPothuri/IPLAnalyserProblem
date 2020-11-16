@@ -63,6 +63,10 @@ public class IPLBowlingAnalysis {
 		return avg;
 	}
 
+	public int getWickets() {
+		return wickets;
+	}
+
 	@Override
 	public String toString() {
 		return "IPLBatting [position=" + position + ", player=" + playerName + ", match=" + matches + ", innings="
