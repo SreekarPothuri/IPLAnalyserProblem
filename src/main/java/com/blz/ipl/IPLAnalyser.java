@@ -135,6 +135,17 @@ public class IPLAnalyser {
 		return sortedWktsJson;
 	}
 
+	public String getTopStrikingRatesOfBowler(String csvFilePath) throws IPLAnalyserException {
+		loadWktsCSVData(csvFilePath);
+		if (iplWktsCSVList == null || iplWktsCSVList.size() == 0) {
+			throw new IPLAnalyserException("NO_CENSUS_DATA", IPLAnalyserException.IPLAnalyserExceptionType.CENSUS_FILE_PROBLEM);
+		}
+		Comparator<IPLBowlingAnalysis> wktsComparator = Comparator.comparing(census -> census.strikeRate);
+		this.sort2(wktsComparator);
+		String sortedWktsJson = new Gson().toJson(this.iplWktsCSVList);
+		return sortedWktsJson;
+	}
+
 	public void sort(Comparator<IPLBattingAnalysis> censusComparator) {
 		for (int i = 0; i < iplRunsCSVList.size(); i++) {
 			for (int j = 0; j < iplRunsCSVList.size() - i - 1; j++) {
